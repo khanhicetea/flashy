@@ -1,0 +1,24 @@
+{
+    "name": "khanhicetea/flashy",
+    "description": "Flashy web framework",
+    "minimum-stability": "stable",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "KhanhIceTea",
+            "email": "khanhicetea@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.0",
+        "psr/http-message": "^1.0",
+        "psr/container": "^1.0",
+        "league/route": "^3.0",
+        "monolog/monolog": "^1.22"
+    },
+    "autoload": {
+        "psr-4": {
+            "Flashy\\": "src/"
+        }
+    }
+}
