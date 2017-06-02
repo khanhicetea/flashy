@@ -6,6 +6,12 @@ use Zend\Diactoros\Response\EmitterInterface;
 use function DI\get;
 
 class HttpApplication {
+    private $kernel;
+
+    public function __construct(Kernel $kernel) {
+        $this->kernel = $kernel;
+    }
+
     public function run(Container $container) : void {
         $response = $container->call(Kernel::class, [
             get('http.request'),
