@@ -5,7 +5,7 @@ use League\Route\RouteCollectionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-abstract class AbstractMiddlewareStack {
+abstract class AbstractMiddlewareStack implements MiddlewareStackInterface {
     private $routing;
     private $stacks = [];
 
@@ -16,7 +16,9 @@ abstract class AbstractMiddlewareStack {
         };
     }
 
-    public function addMiddleware(callable $middleware) {
+    abstract public function loadMiddlewares() : void;
+
+    public function addMiddleware(callable $middleware) : MiddlewareStackInterface {
         $next = $this->stacks[count($this->stacks) - 1];
 
         $this->stacks[] = function(ServerRequestInterface $request, ResponseInterface $response) use ($middleware, $next) {
