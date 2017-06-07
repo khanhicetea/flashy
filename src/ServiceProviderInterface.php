@@ -1,7 +1,9 @@
 <?php
 namespace Flashy;
+
 use DI\ContainerBuilder;
 
-interface ServiceProviderInterface {
+interface ServiceProviderInterface
+{
     public function register(ContainerBuilder $builder, array $opts = []) : void;
 }

@@ -1,18 +1,22 @@
 <?php
 namespace Flashy\Runnable;
+
 use DI\Container;
 use Flashy\Http\Kernel;
 use Zend\Diactoros\Response\EmitterInterface;
 use function DI\get;
 
-class HttpApplication {
+class HttpApplication
+{
     private $kernel;
 
-    public function __construct(Kernel $kernel) {
+    public function __construct(Kernel $kernel)
+    {
         $this->kernel = $kernel;
     }
 
-    public function run(Container $container) : void {
+    public function run(Container $container) : void
+    {
         $response = $container->call(Kernel::class, [
             get('http.request'),
             get('http.response'),

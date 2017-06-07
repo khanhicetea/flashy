@@ -1,17 +1,21 @@
 <?php
 namespace Flashy\Http;
+
 use Psr\Container\ContainerInterface;
 
-abstract class Controller {
+abstract class Controller
+{
     protected $container;
     protected $request;
     protected $response;
 
-    public function __construct(ContainerInterface $container) {
+    public function __construct(ContainerInterface $container)
+    {
         $this->container = $container;
     }
 
-    public function __get($key) {
+    public function __get($key)
+    {
         return $this->container->get($key);
     }
 

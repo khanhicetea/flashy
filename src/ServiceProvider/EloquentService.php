@@ -8,8 +8,10 @@ use function DI\get;
 use Illuminate\Database\Capsule\Manager;
 use Psr\Container\ContainerInterface;
 
-class EloquentService implements ServiceProviderInterface {
-    public function register(ContainerBuilder $builder, array $opts = []) : void {
+class EloquentService implements ServiceProviderInterface
+{
+    public function register(ContainerBuilder $builder, array $opts = []) : void
+    {
         $def = array_merge([
             'db.connection' => [
                 'driver' => 'mysql',
@@ -24,7 +26,7 @@ class EloquentService implements ServiceProviderInterface {
         ], $opts);
 
         $def['capsule'] = get(Manager::class);
-        $def['db'] = function(ContainerInterface $c) {
+        $def['db'] = function (ContainerInterface $c) {
             return $c['capsule']->getDatabaseManager();
         };
         $def[Manager::class] = object(Manager::class)

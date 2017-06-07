@@ -9,8 +9,10 @@ use Psr\Log\LoggerInterface;
 use function DI\object;
 use function DI\get;
 
-class LogService implements ServiceProviderInterface {
-    public function register(ContainerBuilder $builder, array $opts = []) : void {
+class LogService implements ServiceProviderInterface
+{
+    public function register(ContainerBuilder $builder, array $opts = []) : void
+    {
         $def = array_merge([
             'logger.name' => 'Flashy',
             'logger.stream' => false,

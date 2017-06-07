@@ -9,8 +9,10 @@ use Twig_Environment;
 use Twig_LoaderInterface;
 use Twig_Loader_Filesystem;
 
-class TwigService implements ServiceProviderInterface {
-    public function register(ContainerBuilder $builder, array $opts = []) : void {
+class TwigService implements ServiceProviderInterface
+{
+    public function register(ContainerBuilder $builder, array $opts = []) : void
+    {
         $def = array_merge([
             'twig.path' => null,
             'twig.options' => [],
