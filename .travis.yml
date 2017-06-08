@@ -1,11 +1,9 @@
 language: php
 
 php:
-    - 7.0
     - 7.1
 
 env:
-  - COMPOSER_OPTS=""
   - COMPOSER_OPTS="--prefer-dist"
 
 matrix:
