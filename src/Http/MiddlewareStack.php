@@ -2,16 +2,16 @@
 namespace Flashy\Http;
 
 use Exception;
-use League\Route\RouteCollectionInterface;
+use Flashy\Http\Route\Router;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-abstract class AbstractMiddlewareStack implements MiddlewareStackInterface
+abstract class MiddlewareStack implements MiddlewareStackInterface
 {
     private $routing;
     private $stacks = [];
 
-    public function __construct(RouteCollectionInterface $routing)
+    public function __construct(Router $routing)
     {
         $this->routing = $routing;
         $this->stacks[] = function (ServerRequestInterface $request, ResponseInterface $response) use ($routing) : ResponseInterface {
@@ -38,7 +38,7 @@ abstract class AbstractMiddlewareStack implements MiddlewareStackInterface
         return $this;
     }
 
-    public function getRouting() : RouteCollectionInterface
+    public function getRouting() : Router
     {
         return $this->routing;
     }

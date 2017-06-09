@@ -1,12 +1,15 @@
 <?php
 namespace Flashy\Runnable;
 
-use DI\Container;
+use Psr\Container\ContainerInterface;
+use Silly\Edition\PhpDi\Application;
 
 class CliApplication
 {
-    public function run(Container $container) : void
+    public function run(ContainerInterface $container) : void
     {
-        // To be continued ...
+        $app = $container->get(Application::class);
+        $container->call('console.register_func');
+        $app->run();
     }
 }
