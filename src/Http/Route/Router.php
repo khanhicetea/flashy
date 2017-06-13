@@ -29,8 +29,8 @@ abstract class Router extends RouteCollection
         }
 
         if (!$this->prepared) {
-            $this->prepRoutes($request);
             $this->prepared = true;
+            $this->prepRoutes($request);
         }
 
         return (new Dispatcher($this->getData()))->setStrategy($this->getStrategy());
