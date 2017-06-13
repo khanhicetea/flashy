@@ -19,7 +19,7 @@ class ConsoleService implements ServiceProviderInterface
         ], $opts);
 
         $def['console'] = get(Application::class);
-        $def[Application::class] = object(Application::class)
+        $def[Application::class] = object()
             ->constructor(get('console.name'), get('console.version'), get(ContainerInterface::class));
 
         $builder->addDefinitions($def);

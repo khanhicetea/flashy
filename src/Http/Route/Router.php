@@ -18,7 +18,8 @@ abstract class Router extends RouteCollection
         parent::__construct($container, $parser, $generator);
     }
 
-    public function getRouteParser() {
+    public function getRouteParser()
+    {
         return $this->routeParser;
     }
 

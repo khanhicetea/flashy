@@ -29,7 +29,7 @@ class EloquentService implements ServiceProviderInterface
         $def['db'] = function (ContainerInterface $c) {
             return $c['capsule']->getDatabaseManager();
         };
-        $def[Manager::class] = object(Manager::class)
+        $def[Manager::class] = object()
             ->method('addConnection', get('db.connection'))
             ->method('bootEloquent')
             ->method('setAsGlobal');

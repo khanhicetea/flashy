@@ -22,7 +22,7 @@ class TwigService implements ServiceProviderInterface
         $def['twig.loader'] = get(Twig_LoaderInterface::class);
         $def[Twig_LoaderInterface::class] = object(Twig_Loader_Filesystem::class)
             ->constructor(get('twig.path'));
-        $def[Twig_Environment::class] = object(Twig_Environment::class)
+        $def[Twig_Environment::class] = object()
             ->constructor(get('twig.loader'), get('twig.options'));
 
         $builder->addDefinitions($def);

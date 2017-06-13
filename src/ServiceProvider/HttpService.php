@@ -3,6 +3,7 @@ namespace Flashy\ServiceProvider;
 
 use function DI\object;
 use function DI\factory;
+use DI\Scope;
 use DI\ContainerBuilder;
 use Flashy\ServiceProviderInterface;
 use Interop\Container\ContainerInterface;
@@ -32,7 +33,7 @@ class HttpService implements ServiceProviderInterface
         $def['http.response'] = factory(function (ContainerInterface $c) {
             $response_class = $c->get('http.response_class');
             return new $response_class();
-        });
+        })->scope(Scope::PROTOTYPE);
         $def[EmitterInterface::class] = object(SapiStreamEmitter::class);
 
         $builder->addDefinitions($def);

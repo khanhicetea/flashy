@@ -1,12 +1,15 @@
 <?php
 namespace Flashy\Http\Route;
+
 use Exception;
 
-class UrlGenerator {
+class UrlGenerator
+{
     private $router;
     private $parsedCache;
 
-    public function __construct(Router $router) {
+    public function __construct(Router $router)
+    {
         $this->router = $router;
         $this->parsedCache = [];
     }
@@ -22,7 +25,8 @@ class UrlGenerator {
         return $url;
     }
 
-    private function parseRoutePattern(string $namedRoute) : array {
+    private function parseRoutePattern(string $namedRoute) : array
+    {
         if (!array_key_exists($namedRoute, $this->parsedCache)) {
             $route = $this->router->getNamedRoute($namedRoute);
             $pattern = $route->getPath();
@@ -62,7 +66,8 @@ class UrlGenerator {
     }
 
     // Ref : https://github.com/nikic/FastRoute/issues/66#issuecomment-130395124
-    protected function generateDataList($namedRoute, array $list = []) : string {
+    protected function generateDataList($namedRoute, array $list = []) : string
+    {
         $routes = $this->parseRoutePattern($namedRoute);
 
         foreach ($routes as $route) {

@@ -25,7 +25,7 @@ class ReactHttpService implements ServiceProviderInterface
             'http.react_port' => 8080,
         ], $opts);
 
-        $def[Server::class] = object(Server::class)
+        $def[Server::class] = object()
             ->constructor(get('http.react_kernel'))
             ->method('listen', get('http.react_socket_server'));
         $def['http.react_loop'] = function (ContainerInterface  $container) {
