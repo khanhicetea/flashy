@@ -3,16 +3,19 @@ namespace Flashy\Http;
 
 use Exception;
 use Flashy\Http\Route\Router;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 abstract class MiddlewareStack implements MiddlewareStackInterface
 {
-    private $routing;
+    protected $container;
     private $stacks = [];
+    private $routing;
 
-    public function __construct(Router $routing)
+    public function __construct(ContainerInterface $container, Router $routing)
     {
+        $this->container = $container;
         $this->routing = $routing;
         $this->stacks[] = function (ServerRequestInterface $request, ResponseInterface $response) use ($routing) : ResponseInterface {
             return $routing->dispatch($request, $response);
