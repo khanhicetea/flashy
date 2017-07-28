@@ -9,6 +9,7 @@ use Psr\Http\Message\ServerRequestInterface;
 interface MiddlewareStackInterface
 {
     public function __construct(ContainerInterface $container, Router $routing);
+    public function getContainer() : ContainerInterface;
     public function getRouting() : Router;
     public function addMiddleware(callable $middleware) : MiddlewareStackInterface;
     public function loadMiddlewares() : void;

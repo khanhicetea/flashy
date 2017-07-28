@@ -9,9 +9,9 @@ use Psr\Http\Message\ServerRequestInterface;
 
 abstract class MiddlewareStack implements MiddlewareStackInterface
 {
-    protected $container;
-    private $stacks = [];
     private $routing;
+    private $container;
+    private $stacks = [];
 
     public function __construct(ContainerInterface $container, Router $routing)
     {
@@ -39,6 +39,10 @@ abstract class MiddlewareStack implements MiddlewareStackInterface
         };
 
         return $this;
+    }
+
+    public function getContainer(): ContainerInterface {
+        return $this->container;
     }
 
     public function getRouting() : Router
