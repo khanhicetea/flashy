@@ -32,9 +32,9 @@ class HttpService implements ServiceProviderInterface
             return ServerRequestFactory::fromGlobals();
         });
         $def['http.response'] = factory(function (ContainerInterface $c) {
-            $response_class = $c->get('http.response_class');
+            $responseClass = $c->get('http.response_class');
 
-            return new $response_class();
+            return new $responseClass();
         })->scope(Scope::PROTOTYPE);
         $def[EmitterInterface::class] = object(SapiStreamEmitter::class);
 

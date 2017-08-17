@@ -9,8 +9,8 @@ use Psr\Container\ContainerInterface;
 class App
 {
     protected $container = null;
-    protected $container_builder = null;
-    protected $configure_function = null;
+    protected $containerBuilder = null;
+    protected $configureFunction = null;
     protected $services = [];
 
     public function __construct(ContainerBuilder $builder = null)
@@ -20,21 +20,21 @@ class App
             $builder->useAutowiring(true)->useAnnotations(false);
         }
 
-        $this->container_builder = $builder;
+        $this->containerBuilder = $builder;
     }
 
     public function buildContainer(): Container
     {
-        if ($this->configure_function) {
-            call_user_func($this->configure_function, $this->container_builder);
+        if ($this->configureFunction) {
+            call_user_func($this->configureFunction, $this->containerBuilder);
         }
 
-        return $this->container = $this->container_builder->build();
+        return $this->container = $this->containerBuilder->build();
     }
 
     public function configureContainerBuilder(callable $func)
     {
-        $this->configure_function = $func;
+        $this->configureFunction = $func;
     }
 
     public function getContainer(): Container
@@ -44,7 +44,7 @@ class App
 
     public function register(ServiceProviderInterface $service, array $opts = []): void
     {
-        $service->register($this->container_builder, $opts);
+        $service->register($this->containerBuilder, $opts);
     }
 
     public function run($runner)

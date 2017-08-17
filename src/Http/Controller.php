@@ -52,21 +52,21 @@ abstract class Controller
     }
 
     protected function redirectRoute(
-        string $to,
+        string $toRoute,
         array $routeData = [],
         array $queryParams = [],
-        $status_code = 302,
+        $statusCode = 302,
         ResponseInterface $response = null
     ): ResponseInterface {
-        $url = $this->get(UrlGenerator::class)->pathFor($to, $routeData, $queryParams);
+        $url = $this->get(UrlGenerator::class)->pathFor($toRoute, $routeData, $queryParams);
 
-        return $this->redirect($url, $status_code, $response);
+        return $this->redirect($url, $statusCode, $response);
     }
 
-    protected function redirect($to, $status_code = 302, ResponseInterface $response = null): ResponseInterface
+    protected function redirect($toRoute, $statusCode = 302, ResponseInterface $response = null): ResponseInterface
     {
         $response = $response ?: $this->response;
 
-        return $response->withStatus($status_code)->withHeader('Location', $to);
+        return $response->withStatus($statusCode)->withHeader('Location', $toRoute);
     }
 }

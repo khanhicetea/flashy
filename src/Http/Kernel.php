@@ -7,21 +7,21 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class Kernel
 {
-    private $middleware_stack;
+    private $middlewareStack;
 
-    public function __construct(MiddlewareStackInterface $middleware_stack)
+    public function __construct(MiddlewareStackInterface $middlewareStack)
     {
-        $this->middleware_stack = $middleware_stack;
+        $this->middlewareStack = $middlewareStack;
     }
 
     public function getMiddlewareStack(): MiddlewareStackInterface
     {
-        return $this->middleware_stack;
+        return $this->middlewareStack;
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface
     {
-        $response = call_user_func($this->middleware_stack, $request, $response, $next);
+        $response = call_user_func($this->middlewareStack, $request, $response, $next);
 
         return $next($request, $response);
     }
