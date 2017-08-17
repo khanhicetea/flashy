@@ -7,7 +7,7 @@ use function DI\factory;
 use DI\Scope;
 use DI\ContainerBuilder;
 use Flashy\ServiceProviderInterface;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
