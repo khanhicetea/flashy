@@ -37,7 +37,8 @@ class ReactHttpService implements ServiceProviderInterface
         $def['http.react_kernel'] = function (ContainerInterface $container) {
             $kernel = $container->get(Kernel::class);
             return function (ServerRequestInterface $request) use ($container, $kernel) {
-                $response = call_user_func($kernel,
+                $response = call_user_func(
+                    $kernel,
                     $request,
                     $container->get('http.response'),
                     $container->get('http.last_next')

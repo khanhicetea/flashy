@@ -50,12 +50,13 @@ abstract class Controller
         return $response;
     }
 
-    protected function redirectRoute(string $to,
+    protected function redirectRoute(
+        string $to,
         array $routeData = [],
         array $queryParams = [],
         $status_code = 302,
-        ResponseInterface $response = null) : ResponseInterface
-    {
+        ResponseInterface $response = null
+    ) : ResponseInterface {
         $url = $this->get(UrlGenerator::class)->pathFor($to, $routeData, $queryParams);
         return $this->redirect($url, $status_code, $response);
     }

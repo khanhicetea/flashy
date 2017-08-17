@@ -41,7 +41,8 @@ abstract class MiddlewareStack implements MiddlewareStackInterface
         return $this;
     }
 
-    public function getContainer(): ContainerInterface {
+    public function getContainer(): ContainerInterface
+    {
         return $this->container;
     }
 
