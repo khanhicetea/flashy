@@ -1,4 +1,5 @@
 <?php
+
 namespace Flashy\Http\Route;
 
 use Exception;
@@ -14,18 +15,18 @@ class UrlGenerator
         $this->parsedCache = [];
     }
 
-    public function pathFor($namedRoute, array $parameters = [], array $queryParams = []) : string
+    public function pathFor($namedRoute, array $parameters = [], array $queryParams = []): string
     {
         $url = isset($parameters[0]) ? $this->generateDataList($namedRoute, $parameters) : $this->generateDataAssoc($namedRoute, $parameters);
 
         if ($queryParams) {
-            $url .= '?' . http_build_query($queryParams);
+            $url .= '?'.http_build_query($queryParams);
         }
 
         return $url;
     }
 
-    private function parseRoutePattern(string $namedRoute) : array
+    private function parseRoutePattern(string $namedRoute): array
     {
         if (!array_key_exists($namedRoute, $this->parsedCache)) {
             $route = $this->router->getNamedRoute($namedRoute);
@@ -37,7 +38,7 @@ class UrlGenerator
     }
 
     // Ref : Router from Slim3 framework
-    protected function generateDataAssoc($namedRoute, array $data = []) : string
+    protected function generateDataAssoc($namedRoute, array $data = []): string
     {
         $routeDatas = array_reverse($this->parseRoutePattern($namedRoute));
         $segments = [];
@@ -60,13 +61,14 @@ class UrlGenerator
             }
         }
         if (empty($segments)) {
-            throw new Exception('Missing data for URL segment: ' . $segmentName);
+            throw new Exception('Missing data for URL segment: '.$segmentName);
         }
+
         return implode('', $segments);
     }
 
     // Ref : https://github.com/nikic/FastRoute/issues/66#issuecomment-130395124
-    protected function generateDataList($namedRoute, array $list = []) : string
+    protected function generateDataList($namedRoute, array $list = []): string
     {
         $routes = $this->parseRoutePattern($namedRoute);
 

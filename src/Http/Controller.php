@@ -1,4 +1,5 @@
 <?php
+
 namespace Flashy\Http;
 
 use Flashy\Http\Route\UrlGenerator;
@@ -34,7 +35,7 @@ abstract class Controller
         return call_user_func_array([$this, $method], $args);
     }
 
-    protected function json(array $data, ResponseInterface $response = null) : ResponseInterface
+    protected function json(array $data, ResponseInterface $response = null): ResponseInterface
     {
         $response = $response ?: $this->response;
         $response->getBody()->write(json_encode($data));
@@ -42,7 +43,7 @@ abstract class Controller
         return $response->withHeader('Content-Type', 'application/json');
     }
 
-    protected function render(string $template, array $data, ResponseInterface $response = null) : ResponseInterface
+    protected function render(string $template, array $data, ResponseInterface $response = null): ResponseInterface
     {
         $response = $response ?: $this->response;
         $response->getBody()->write($this->twig->render($template, $data));
@@ -56,14 +57,16 @@ abstract class Controller
         array $queryParams = [],
         $status_code = 302,
         ResponseInterface $response = null
-    ) : ResponseInterface {
+    ): ResponseInterface {
         $url = $this->get(UrlGenerator::class)->pathFor($to, $routeData, $queryParams);
+
         return $this->redirect($url, $status_code, $response);
     }
 
-    protected function redirect($to, $status_code = 302, ResponseInterface $response = null) : ResponseInterface
+    protected function redirect($to, $status_code = 302, ResponseInterface $response = null): ResponseInterface
     {
         $response = $response ?: $this->response;
+
         return $response->withStatus($status_code)->withHeader('Location', $to);
     }
 }

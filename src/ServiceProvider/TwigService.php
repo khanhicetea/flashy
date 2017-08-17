@@ -1,4 +1,5 @@
 <?php
+
 namespace Flashy\ServiceProvider;
 
 use Flashy\ServiceProviderInterface;
@@ -11,7 +12,7 @@ use Twig_Loader_Filesystem;
 
 class TwigService implements ServiceProviderInterface
 {
-    public function register(ContainerBuilder $builder, array $opts = []) : void
+    public function register(ContainerBuilder $builder, array $opts = []): void
     {
         $def = array_merge([
             'twig.path' => null,

@@ -1,4 +1,5 @@
 <?php
+
 namespace Flashy\ServiceProvider;
 
 use function DI\object;
@@ -18,7 +19,7 @@ use React\EventLoop\Factory;
 
 class ReactHttpService implements ServiceProviderInterface
 {
-    public function register(ContainerBuilder $builder, array $opts = []) : void
+    public function register(ContainerBuilder $builder, array $opts = []): void
     {
         $def = array_merge([
             'http.response_class' => Response::class,
@@ -36,6 +37,7 @@ class ReactHttpService implements ServiceProviderInterface
         };
         $def['http.react_kernel'] = function (ContainerInterface $container) {
             $kernel = $container->get(Kernel::class);
+
             return function (ServerRequestInterface $request) use ($container, $kernel) {
                 $response = call_user_func(
                     $kernel,
@@ -43,16 +45,18 @@ class ReactHttpService implements ServiceProviderInterface
                     $container->get('http.response'),
                     $container->get('http.last_next')
                 );
+
                 return $response;
             };
         };
         $def['http.last_next'] = function (ContainerInterface $c) {
-            return function (ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface {
+            return function (ServerRequestInterface $request, ResponseInterface $response): ResponseInterface {
                 return $response;
             };
         };
         $def['http.response'] = factory(function (ContainerInterface $c) {
             $response_class = $c->get('http.response_class');
+
             return new $response_class();
         })->scope(Scope::PROTOTYPE);
 

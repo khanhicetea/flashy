@@ -1,4 +1,5 @@
 <?php
+
 namespace Flashy\ServiceProvider;
 
 use Flashy\ServiceProviderInterface;
@@ -9,7 +10,7 @@ use function DI\get;
 
 class RedisService implements ServiceProviderInterface
 {
-    public function register(ContainerBuilder $builder, array $opts = []) : void
+    public function register(ContainerBuilder $builder, array $opts = []): void
     {
         $def = array_merge([
             'redis.host' => '127.0.0.1',

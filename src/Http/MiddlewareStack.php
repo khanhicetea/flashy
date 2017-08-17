@@ -1,4 +1,5 @@
 <?php
+
 namespace Flashy\Http;
 
 use Exception;
@@ -17,14 +18,14 @@ abstract class MiddlewareStack implements MiddlewareStackInterface
     {
         $this->container = $container;
         $this->routing = $routing;
-        $this->stacks[] = function (ServerRequestInterface $request, ResponseInterface $response) use ($routing) : ResponseInterface {
+        $this->stacks[] = function (ServerRequestInterface $request, ResponseInterface $response) use ($routing): ResponseInterface {
             return $routing->dispatch($request, $response);
         };
     }
 
-    abstract public function loadMiddlewares() : void;
+    abstract public function loadMiddlewares(): void;
 
-    public function addMiddleware(callable $middleware) : MiddlewareStackInterface
+    public function addMiddleware(callable $middleware): MiddlewareStackInterface
     {
         $next = $this->stacks[count($this->stacks) - 1];
 
@@ -35,6 +36,7 @@ abstract class MiddlewareStack implements MiddlewareStackInterface
                     'Middleware must return instance of \Psr\Http\Message\ResponseInterface'
                 );
             }
+
             return $result;
         };
 
@@ -46,12 +48,12 @@ abstract class MiddlewareStack implements MiddlewareStackInterface
         return $this->container;
     }
 
-    public function getRouting() : Router
+    public function getRouting(): Router
     {
         return $this->routing;
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next) : ResponseInterface
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface
     {
         $middleware = $this->stacks[count($this->stacks) - 1];
 
@@ -61,6 +63,7 @@ abstract class MiddlewareStack implements MiddlewareStackInterface
                 'Middleware must return instance of \Psr\Http\Message\ResponseInterface'
             );
         }
+
         return $result;
     }
 }

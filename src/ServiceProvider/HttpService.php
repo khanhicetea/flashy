@@ -1,4 +1,5 @@
 <?php
+
 namespace Flashy\ServiceProvider;
 
 use function DI\object;
@@ -16,14 +17,14 @@ use Zend\Diactoros\Response\SapiStreamEmitter;
 
 class HttpService implements ServiceProviderInterface
 {
-    public function register(ContainerBuilder $builder, array $opts = []) : void
+    public function register(ContainerBuilder $builder, array $opts = []): void
     {
         $def = array_merge([
             'http.response_class' => Response::class,
         ], $opts);
 
         $def['http.last_next'] = function (ContainerInterface $c) {
-            return function (ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface {
+            return function (ServerRequestInterface $request, ResponseInterface $response): ResponseInterface {
                 return $response;
             };
         };
@@ -32,6 +33,7 @@ class HttpService implements ServiceProviderInterface
         });
         $def['http.response'] = factory(function (ContainerInterface $c) {
             $response_class = $c->get('http.response_class');
+
             return new $response_class();
         })->scope(Scope::PROTOTYPE);
         $def[EmitterInterface::class] = object(SapiStreamEmitter::class);

@@ -1,4 +1,5 @@
 <?php
+
 namespace Flashy\Http\Route;
 
 use League\Route\RouteCollection;
@@ -26,7 +27,7 @@ abstract class Router extends RouteCollection
     public function getDispatcher(ServerRequestInterface $request)
     {
         if (is_null($this->getStrategy())) {
-            $this->setStrategy(new ApplicationStrategy);
+            $this->setStrategy(new ApplicationStrategy());
         }
 
         if (!$this->prepared) {

@@ -1,4 +1,5 @@
 <?php
+
 namespace Flashy;
 
 use DI\Container;
@@ -22,7 +23,7 @@ class App
         $this->container_builder = $builder;
     }
 
-    public function buildContainer() : Container
+    public function buildContainer(): Container
     {
         if ($this->configure_function) {
             call_user_func($this->configure_function, $this->container_builder);
@@ -36,12 +37,12 @@ class App
         $this->configure_function = $func;
     }
 
-    public function getContainer() : Container
+    public function getContainer(): Container
     {
         return $this->container;
     }
 
-    public function register(ServiceProviderInterface $service, array $opts = []) : void
+    public function register(ServiceProviderInterface $service, array $opts = []): void
     {
         $service->register($this->container_builder, $opts);
     }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Flashy\Runnable;
 
 use Flashy\Http\Kernel;
@@ -15,7 +16,7 @@ class HttpApplication
         $this->kernel = $kernel;
     }
 
-    public function run(ContainerInterface $container) : void
+    public function run(ContainerInterface $container): void
     {
         $response = $container->call(Kernel::class, [
             get('http.request'),

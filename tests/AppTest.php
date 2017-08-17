@@ -1,4 +1,5 @@
 <?php
+
 namespace Flashy\Test;
 
 use DI\Container;
@@ -30,7 +31,7 @@ class AppTest extends TestCase
     {
         $app = new App();
         $app->register(new DumbService(), [
-            'test' => 'Ok'
+            'test' => 'Ok',
         ]);
         $container = $app->buildContainer();
         $this->assertInstanceOf(B::class, $container->get(A::class));
@@ -41,12 +42,12 @@ class AppTest extends TestCase
     {
         $app = new App();
         $app->register(new DumbService(), [
-            'test' => 'Ok'
+            'test' => 'Ok',
         ]);
         $app->configureContainerBuilder(function ($builder) {
             $builder->addDefinitions([
                 'test' => 'lol',
-                A::class => object(C::class)
+                A::class => object(C::class),
             ]);
         });
         $container = $app->buildContainer();
@@ -59,7 +60,7 @@ class AppTest extends TestCase
     {
         $app = new App();
         $app->register(new DumbService(), [
-            'test' => 'Ok'
+            'test' => 'Ok',
         ]);
         $result = $app->run(DumbApplication::class);
         $this->assertEquals('Ok', $result);
@@ -78,7 +79,7 @@ class C extends A
 
 class DumbService implements ServiceProviderInterface
 {
-    public function register(ContainerBuilder $builder, array $opts = []) : void
+    public function register(ContainerBuilder $builder, array $opts = []): void
     {
         $def = array_merge([
             'test' => 'Flashy',

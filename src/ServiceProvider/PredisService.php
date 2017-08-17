@@ -1,4 +1,5 @@
 <?php
+
 namespace Flashy\ServiceProvider;
 
 use Flashy\ServiceProviderInterface;
@@ -10,7 +11,7 @@ use function DI\get;
 
 class PredisService implements ServiceProviderInterface
 {
-    public function register(ContainerBuilder $builder, array $opts = []) : void
+    public function register(ContainerBuilder $builder, array $opts = []): void
     {
         $def = array_merge([
             'predis.connection' => 'tcp://127.0.0.1:6379',
@@ -22,7 +23,7 @@ class PredisService implements ServiceProviderInterface
             ->constructor(get('predis.connection_string'))
             ->method('select', get('predis.database'));
         $def[Client::class] = function (ContainerInterface $container) {
-            // Redis class reflection will be wrong so we define it manually way
+            // Redis class reflection will be wrong so we define it manually here
             $redis = new Client($container->get('predis.connection'));
             $redis->select(intval($container->get('predis.database')));
 

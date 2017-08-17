@@ -1,4 +1,5 @@
 <?php
+
 namespace Flashy\ServiceProvider;
 
 use Flashy\ServiceProviderInterface;
@@ -10,7 +11,7 @@ use Psr\Container\ContainerInterface;
 
 class EloquentService implements ServiceProviderInterface
 {
-    public function register(ContainerBuilder $builder, array $opts = []) : void
+    public function register(ContainerBuilder $builder, array $opts = []): void
     {
         $def = array_merge([
             'db.connection' => [
