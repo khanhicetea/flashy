@@ -1,8 +1,6 @@
 engines:
-  phan:
+  phpmd:
     enabled: true
-    config:
-      file_extensions: "php"
 ratings:
   paths:
     - "**.php"
