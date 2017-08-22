@@ -4,10 +4,12 @@ namespace Flashy\Http;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Flashy\Http\Middleware\MiddlewareStackInterface;
 
 class Kernel
 {
     private $middlewareStack;
+    private $kernelStack;
 
     public function __construct(MiddlewareStackInterface $middlewareStack)
     {
