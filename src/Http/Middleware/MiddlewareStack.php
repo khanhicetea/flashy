@@ -19,8 +19,6 @@ abstract class MiddlewareStack implements MiddlewareStackInterface
         $this->resolver = $resolver;
     }
 
-    abstract public function loadMiddlewares(): void;
-
     public function getMiddlewares() : array
     {
         return $this->stack;
@@ -50,12 +48,12 @@ abstract class MiddlewareStack implements MiddlewareStackInterface
     public function resolve($index) : callable
     {
         return function (ServerRequestInterface $request, ResponseInterface $response) use ($index) : ResponseInterface {
-            if (empty($item = $this->stack[$index])) {
+            if (empty($this->stack[$index])) {
                 return $response;
             }
             
             $resolver = $this->getResolver();
-            $callable = $resolver($item);
+            $callable = $resolver($this->stack[$index]);
 
             return $callable($request, $response, $this->resolve($index + 1));
         };

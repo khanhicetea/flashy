@@ -22,6 +22,8 @@ abstract class RoutingMiddlewareStack extends MiddlewareStack
         };
     }
 
+    abstract public function loadMiddlewares(): void;
+
     public function getRouting() : Router
     {
         return $this->routing;
@@ -29,11 +31,10 @@ abstract class RoutingMiddlewareStack extends MiddlewareStack
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $next): ResponseInterface
     {
-        $this->pushMiddleware($this->routing_middleware);
-
         $bottom = $this->resolve(0);
+
+        $this->pushMiddleware($this->routing_middleware);
         $response = $bottom($request, $response);
-        
         $this->popMiddleware();
 
         $resolver = $this->getResolver();

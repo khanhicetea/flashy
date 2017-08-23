@@ -18,10 +18,9 @@ class HttpApplication
 
     public function run(ContainerInterface $container): void
     {
-        $response = $container->call(Kernel::class, [
+        $response = $container->call([Kernel::class, 'run'], [
             get('http.request'),
-            get('http.response'),
-            get('http.last_next'),
+            get('http.response')
         ]);
 
         $container->get(EmitterInterface::class)->emit($response);

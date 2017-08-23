@@ -4,6 +4,7 @@ namespace Flashy\ServiceProvider;
 
 use function DI\object;
 use function DI\factory;
+use function DI\get;
 use DI\Scope;
 use DI\ContainerBuilder;
 use Flashy\ServiceProviderInterface;
@@ -14,6 +15,9 @@ use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Response\EmitterInterface;
 use Zend\Diactoros\Response\SapiStreamEmitter;
+use Flashy\Http\Middleware\KernelMiddlewareStack;
+use Flashy\Http\Middleware\RoutingMiddlewareStack;
+use Flashy\Http\Middleware\ErrorHandler;
 
 class HttpService implements ServiceProviderInterface
 {
@@ -23,11 +27,6 @@ class HttpService implements ServiceProviderInterface
             'http.response_class' => Response::class,
         ], $opts);
 
-        $def['http.last_next'] = function (ContainerInterface $c) {
-            return function (ServerRequestInterface $request, ResponseInterface $response): ResponseInterface {
-                return $response;
-            };
-        };
         $def['http.request'] = factory(function (ContainerInterface $c) {
             return ServerRequestFactory::fromGlobals();
         });
@@ -36,6 +35,10 @@ class HttpService implements ServiceProviderInterface
 
             return new $responseClass();
         })->scope(Scope::PROTOTYPE);
+        $def[KernelMiddlewareStack::class] = object()
+            ->method('pushMiddleware', get(ErrorHandler::class))
+            ->method('pushMiddleware', get(RoutingMiddlewareStack::class));
+
         $def[EmitterInterface::class] = object(SapiStreamEmitter::class);
 
         $builder->addDefinitions($def);

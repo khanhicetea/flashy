@@ -53,6 +53,7 @@ class App
 
         $this->container->set(ContainerInterface::class, $this->container);
         $this->container->set(Container::class, $this->container);
+        $this->container->set(static::class, $this);
 
         return $this->container->call([$runner, 'run']);
     }
