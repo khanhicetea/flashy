@@ -5,7 +5,6 @@ namespace Flashy\Http;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Flashy\Http\Middleware\KernelMiddlewareStack;
-use Flashy\Http\Middleware\DoNothing;
 
 class Kernel
 {

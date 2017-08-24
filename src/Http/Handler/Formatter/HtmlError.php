@@ -2,20 +2,25 @@
 namespace Flashy\Http\Handler\Formatter;
 
 use Throwable;
-use SplFileObject;
-use Flashy\Http\Utils;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use RingCentral\Psr7\Stream;
 
-class HtmlError {
+class HtmlError
+{
     protected $template;
 
-    public function output(ServerRequestInterface $request, ResponseInterface $response, Throwable $e) {
-        $output = $this->render($this->template, [
+    protected function processErrorBody(ServerRequestInterface $request, Throwable $e) : string
+    {
+        return $this->render($this->template, [
             'msg' => 'Oopps ! Something went wrong !',
             'description' => "Don't worry ! It's not your fault, but our fault :( We will fix it soon.",
         ]);
+    }
+
+    public function output(ServerRequestInterface $request, ResponseInterface $response, Throwable $e)
+    {
+        $output = $this->processErrorBody($request, $e);
 
         $body = new Stream(fopen('php://temp', 'r+'));
         $body->write($output);
@@ -23,14 +28,16 @@ class HtmlError {
         return $response->withHeader('Content-type', 'text/html')->withBody($body);
     }
 
-    protected function render($html, $data) {
+    protected function render($html, $data)
+    {
         foreach ($data as $key => $value) {
             $html = str_replace('{{'.$key.'}}', $value, $html);
         }
         return $html;
     }
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->template = <<<EOF
 <!DOCTYPE html>
 <html lang="en">

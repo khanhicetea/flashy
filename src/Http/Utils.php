@@ -4,10 +4,10 @@ namespace Flashy\Http;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
-use Flashy\Http\Middleware\KernelMiddlewareStack;
 
-class Utils {
-    public static $knownContentTypes = ['text/html', 'application/json', 'application/xml', 'application/xml'];
+class Utils
+{
+    public static $knownContentTypes = ['text/html', 'application/json', 'text/xml', 'application/xml'];
 
     public static function determineContentType(ServerRequestInterface $request)
     {
@@ -26,11 +26,15 @@ class Utils {
         return 'text/html';
     }
 
-    public static function dumpHeader(ServerRequestInterface $request) {
+    public static function dumpHeader(ServerRequestInterface $request)
+    {
         $headers = [];
         $headers[] = sprintf("> %s %s HTTP/%s", $request->getMethod(), $request->getUri(), $request->getProtocolVersion());
+        
+        $requestHeaders = $request->getHeaders();
+        ksort($requestHeaders, SORT_STRING);
 
-        foreach ($request->getHeaders() as $header => $value) {
+        foreach (array_keys($requestHeaders) as $header) {
             $headers[] = sprintf("> %s: %s", $header, $request->getHeaderLine($header));
         }
 
@@ -71,7 +75,8 @@ class Utils {
         return $data;
     }
 
-    public static function dumpPayload(ServerRequestInterface $request) {
+    public static function dumpPayload(ServerRequestInterface $request)
+    {
         $contentType = $request->getHeaderLine('Content-Type');
         $body = $request->getBody();
 

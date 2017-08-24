@@ -31,8 +31,9 @@ abstract class Controller
     {
         $this->request = array_shift($args);
         $this->response = array_shift($args);
+        $actionArgs = array_shift($args);
 
-        return call_user_func_array([$this, $method], $args);
+        return call_user_func_array([$this, $method], $actionArgs);
     }
 
     protected function json(array $data, ResponseInterface $response = null): ResponseInterface

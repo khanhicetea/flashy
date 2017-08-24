@@ -13,7 +13,7 @@ class App
     protected $configureFunction = null;
     protected $services = [];
 
-    public function __construct(ContainerBuilder $builder = null)
+    public function __construct($debug = false, ContainerBuilder $builder = null)
     {
         if (null === $builder) {
             $builder = new ContainerBuilder();
@@ -21,6 +21,7 @@ class App
         }
 
         $this->containerBuilder = $builder;
+        $this->containerBuilder->addDefinitions(['debug' => $debug]);
     }
 
     public function buildContainer(): Container

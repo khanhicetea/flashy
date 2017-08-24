@@ -5,13 +5,14 @@ use Throwable;
 use SplFileObject;
 use Flashy\Http\Utils;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use RingCentral\Psr7\Stream;
 
-class DebugError extends HtmlError {
-    public function output(ServerRequestInterface $request, ResponseInterface $response, Throwable $e) {
+class DebugError extends HtmlError
+{
+    protected function processErrorBody(ServerRequestInterface $request, Throwable $e) : string
+    {
         $traces = $this->parseTraceString($e->getTraceAsString());
-        $output = $this->render($this->template, [
+
+        return $this->render($this->template, [
             'msg' => sprintf("%s (%s)", $e->getMessage(), $e->getCode()),
             'q' => sprintf("%s %s", $e->getMessage(), basename($e->getFile())),
             'description' => sprintf('<a class="clipboard" data-clipboard-text="%s"><strong>%s</strong></a> : %s', $e->getFile(), $e->getFile(), $e->getLine()),
@@ -20,15 +21,11 @@ class DebugError extends HtmlError {
             'http_request' => implode("\n", Utils::dumpHeader($request)),
             'http_payload' => Utils::dumpPayload($request),
         ]);
-
-        $body = new Stream(fopen('php://temp', 'r+'));
-        $body->write($output);
-        
-        return $response->withHeader('Content-type', 'text/html')->withBody($body);
     }
 
-    protected function parseTraceString(string $string) : array {
-        return array_map(function($line) {
+    protected function parseTraceString(string $string) : array
+    {
+        return array_map(function ($line) {
             if (preg_match('/#(\d+) (.*\/)([^\/]*)\((\d+)\): (.*)/', $line, $matches)) {
                 return [
                     '#' => $matches[1],
@@ -42,7 +39,8 @@ class DebugError extends HtmlError {
         }, explode("\n", $string));
     }
 
-    protected function renderTraceString(array $traces) {
+    protected function renderTraceString(array $traces)
+    {
         $count = 0;
         $items = [];
         foreach ($traces as $trace) {
@@ -57,31 +55,35 @@ class DebugError extends HtmlError {
         return implode("\n", $items);
     }
 
-    protected function render($html, $data) {
+    protected function render($html, $data)
+    {
         foreach ($data as $key => $value) {
             $html = str_replace('{{'.$key.'}}', $value, $html);
         }
         return $html;
     }
 
-    protected function readErrorFile(Throwable $e, $surround = 3) {
+    protected function readErrorFile(Throwable $e, $surround = 3)
+    {
         $file = new SplFileObject($e->getFile());
         $begin = max(0, $e->getLine() - $surround);
         $count = 0;
         $content = "";
+        $strlen = strlen($begin + $surround);
 
         while (!$file->eof()) {
             $count++;
             $line = $file->fgets();
             if ($count >= $begin && ($count - $begin) < 2 * $surround) {
-                $content .= $count.". ".$line;
+                $content .= str_pad($count, $strlen, " ", STR_PAD_LEFT).". ".$line;
             }
         }
 
         return $content;
     }
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->template = <<<EOF
 <!DOCTYPE html>
 <html lang="en">

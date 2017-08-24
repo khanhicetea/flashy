@@ -9,8 +9,6 @@ use DI\Scope;
 use DI\ContainerBuilder;
 use Flashy\ServiceProviderInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Response\EmitterInterface;
@@ -18,6 +16,7 @@ use Zend\Diactoros\Response\SapiStreamEmitter;
 use Flashy\Http\Middleware\KernelMiddlewareStack;
 use Flashy\Http\Middleware\RoutingMiddlewareStack;
 use Flashy\Http\Middleware\ErrorHandler;
+use Flashy\Http\Handler\HttpErrorHandler;
 
 class HttpService implements ServiceProviderInterface
 {
@@ -35,6 +34,8 @@ class HttpService implements ServiceProviderInterface
 
             return new $responseClass();
         })->scope(Scope::PROTOTYPE);
+        $def[HttpErrorHandler::class] = object()
+            ->constructorParameter('debug', get('debug'));
         $def[KernelMiddlewareStack::class] = object()
             ->method('pushMiddleware', get(ErrorHandler::class))
             ->method('pushMiddleware', get(RoutingMiddlewareStack::class));

@@ -2,15 +2,17 @@
 namespace Flashy\Http\Handler;
 
 use Throwable;
-use League\Route\Http\Exception\MethodNotAllowedException;
+use League\Route\Http\Exception as HttpException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Flashy\Http\Handler\Formatter\DebugError;
 use Flashy\Http\Handler\Formatter\HtmlError;
 use Flashy\Http\Handler\Formatter\JsonError;
+use Flashy\Http\Handler\Formatter\XmlError;
 use Flashy\Http\Utils;
 
-class HttpErrorHandler {
+class HttpErrorHandler
+{
     private $handlers = [];
     private $debug;
     private $debug_handler;
@@ -19,7 +21,8 @@ class HttpErrorHandler {
         DebugError $debugError,
         HtmlError $htmlError,
         JsonError $jsonError,
-        bool $debug = false
+        XmlError $xmlError,
+        bool $debug = true
     ) {
         $this->debug = $debug;
 
@@ -29,31 +32,58 @@ class HttpErrorHandler {
             $this->handlers = [
                 'html' => $htmlError,
                 'json' => $jsonError,
+                'xml' => $xmlError,
             ];
         }
     }
 
-    public function getHandler(string $contentType) {
+    public function getHandler(string $contentType)
+    {
         $parts = explode('/', $contentType);
         $type = $parts[1] ?? $parts[0];
         return $this->debug ? $this->debug_handler : $this->handlers[$type];
     }
 
-    public function handle(ServerRequestInterface $request, ResponseInterface $response, Throwable $e) : ResponseInterface {
-        if ($e instanceof MethodNotAllowedException) {
-            return $this->handleMethodNotAllowed($request, $response, $e);
+    public function handle(ServerRequestInterface $request, ResponseInterface $response, Throwable $e) : ResponseInterface
+    {
+        if ($e instanceof HttpException) {
+            return $this->handleHttpException($request, $response, $e);
+        } elseif ($e instanceof Throwable) {
+            return $this->handleException($request, $response, $e);
         }
     }
 
-    protected function handleMethodNotAllowed(ServerRequestInterface $request, ResponseInterface $response, MethodNotAllowedException $e) {
-        $statusCode = $request->getMethod() == 'OPTIONS' ? 200 : 405;
-        $contentType = $request->getMethod() == 'OPTIONS' ? 'text/plain' : Utils::determineContentType($request);
-        $headers = $e->getHeaders();
+    protected function handleHttpException(ServerRequestInterface $request, ResponseInterface $response, HttpException $e)
+    {
+        if ($request->getMethod() == 'OPTIONS') {
+            return $response
+                ->withStatus(200)
+                ->withHeader('Content-type', 'text/plain')
+                ->getBody()->write($e->getMessage());
+        }
 
-        $response = $response
-            ->withStatus($statusCode)
-            ->withHeader('Content-type', $contentType)
-            ->withHeader('Allow', $headers['Allow']);
+        $headers = $e->getHeaders();
+        foreach ($headers as $key => $value) {
+            $response = $response->withHeader($key, $value);
+        }
+
+        $contentType = Utils::determineContentType($request);
+        $response = $response->withStatus($e->getStatusCode());
+
+        return $this->getHandler($contentType)->output($request, $response, $e);
+    }
+
+    protected function handleException(ServerRequestInterface $request, ResponseInterface $response, Throwable $e)
+    {
+        if ($request->getMethod() == 'OPTIONS') {
+            return $response
+                ->withStatus(200)
+                ->withHeader('Content-type', 'text/plain')
+                ->getBody()->write($e->getMessage());
+        }
+
+        $contentType = Utils::determineContentType($request);
+        $response = $response->withStatus(500);
 
         return $this->getHandler($contentType)->output($request, $response, $e);
     }
