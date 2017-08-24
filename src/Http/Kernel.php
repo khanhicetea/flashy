@@ -4,25 +4,23 @@ namespace Flashy\Http;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Flashy\Http\Middleware\KernelMiddlewareStack;
 
 class Kernel
 {
-    private $middlewareStack;
+    private $kernelStack;
+    private $doNothing;
 
-    public function __construct(MiddlewareStackInterface $middlewareStack)
+    public function __construct(KernelMiddlewareStack $kernelStack)
     {
-        $this->middlewareStack = $middlewareStack;
+        $this->kernelStack = $kernelStack;
+        $this->doNothing = function (ServerRequestInterface $request, ResponseInterface $response) {
+            return $response;
+        };
     }
 
-    public function getMiddlewareStack(): MiddlewareStackInterface
+    public function run(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        return $this->middlewareStack;
-    }
-
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next): ResponseInterface
-    {
-        $response = call_user_func($this->middlewareStack, $request, $response, $next);
-
-        return $next($request, $response);
+        return call_user_func($this->kernelStack, $request, $response, $this->doNothing);
     }
 }
