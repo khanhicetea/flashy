@@ -9,13 +9,16 @@ use DI\Scope;
 use DI\ContainerBuilder;
 use Flashy\ServiceProviderInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 use React\Http\Server;
 use React\Socket\Server as SocketServer;
 use Flashy\Http\Kernel;
 use React\EventLoop\Factory;
+use Flashy\Http\Middleware\KernelMiddlewareStack;
+use Flashy\Http\Middleware\RoutingMiddlewareStack;
+use Flashy\Http\Middleware\ErrorHandler;
+use Flashy\Http\Handler\HttpErrorHandler;
 
 class ReactHttpService implements ServiceProviderInterface
 {
@@ -39,18 +42,11 @@ class ReactHttpService implements ServiceProviderInterface
             $kernel = $container->get(Kernel::class);
 
             return function (ServerRequestInterface $request) use ($container, $kernel) {
-                $response = call_user_func(
-                    $kernel,
+                $response = $kernel->run(
                     $request,
-                    $container->get('http.response'),
-                    $container->get('http.last_next')
+                    $container->get('http.response')
                 );
 
-                return $response;
-            };
-        };
-        $def['http.last_next'] = function (ContainerInterface $c) {
-            return function (ServerRequestInterface $request, ResponseInterface $response): ResponseInterface {
                 return $response;
             };
         };
@@ -59,6 +55,11 @@ class ReactHttpService implements ServiceProviderInterface
 
             return new $response_class();
         })->scope(Scope::PROTOTYPE);
+        $def[HttpErrorHandler::class] = object()
+            ->constructorParameter('debug', get('debug'));
+        $def[KernelMiddlewareStack::class] = object()
+            ->method('pushMiddleware', get(ErrorHandler::class))
+            ->method('pushMiddleware', get(RoutingMiddlewareStack::class));
 
         $builder->addDefinitions($def);
     }
