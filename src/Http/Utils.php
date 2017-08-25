@@ -41,7 +41,7 @@ class Utils
         return $headers;
     }
 
-    public static function json(StreamInterface $body, $assos = true)
+    public static function json(StreamInterface $body, $assoc = true)
     {
         $string = (string) $body;
         if ($string === '') {
