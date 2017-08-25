@@ -41,9 +41,8 @@ class Utils
         return $headers;
     }
 
-    public static function json(StreamInterface $body)
+    public static function json(StreamInterface $body, $assos = true)
     {
-        $assoc = (bool) $this->options['forceArray'];
         $string = (string) $body;
         if ($string === '') {
             return [];
