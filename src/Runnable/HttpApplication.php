@@ -9,13 +9,6 @@ use function DI\get;
 
 class HttpApplication
 {
-    private $kernel;
-
-    public function __construct(Kernel $kernel)
-    {
-        $this->kernel = $kernel;
-    }
-
     public function run(ContainerInterface $container): void
     {
         $response = $container->call([Kernel::class, 'run'], [

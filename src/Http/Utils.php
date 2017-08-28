@@ -4,6 +4,8 @@ namespace Flashy\Http;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
+use Zend\Diactoros\ServerRequest;
+use Zend\Diactoros\Stream;
 
 class Utils
 {
@@ -89,5 +91,22 @@ class Utils
         }
 
         return $request->getMethod() == 'GET' ? 'No payload' : 'Can not display multipart/form-data payload';
+    }
+
+    public static function makeRequest(
+        string $method,
+        string $uri,
+        $body = null,
+        array $headers = [],
+        array $queryParams = []
+    ) : ServerRequestInterface {
+        $stream = 'php://input';
+        if (is_string($body)) {
+            $stream = new Stream('php://temp', 'r+');
+            $stream->write($body);
+            $stream->rewind();
+        }
+        
+        return new ServerRequest([], [], $uri, $method, $stream, $headers, $queryParams);
     }
 }
